@@ -11,7 +11,6 @@ Live Attendance System with Go
 - [Usage](#usage)
 - [Additional Suggestions](#additional-suggestions)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
