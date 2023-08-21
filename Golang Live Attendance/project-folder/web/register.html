@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Registration</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="form-container">
+            <h1 class="text-center mb-4">Employee Registration</h1>
+
+            <!-- Modal for Success -->
+            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="successModalLabel">Success!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Employee registration was successful.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal for Failure -->
+            <div class="modal fade" id="failureModal" tabindex="-1" role="dialog" aria-labelledby="failureModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="failureModalLabel">Failed!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Employee registration failed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <form id="registrationForm" action="/register" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Employee Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="employee_work_id">Employee Work ID</label>
+                    <input type="text" class="form-control" id="employee_work_id" name="employee_work_id" required>
+                </div>
+                <div class="form-group">
+                    <label>Capture Image:</label>
+                    <button type="button" class="btn btn-secondary" id="capture-btn">Capture</button>
+                    <canvas id="image-canvas" style="display: none;"></canvas>
+                    <div id="captured-image" style="display: none; margin-top: 10px; text-align: center;">
+                        <img id="captured-img" src="" alt="Captured Image" style="max-width: 200px;">
+                    </div>
+                    <input type="hidden" id="image" name="image">
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary mr-2" onclick="handleFormSubmission()">Register</button>
+                    <a href="/" class="btn btn-danger ml-2">Absence</a>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/emplist" class="btn btn-secondary">Employee List</a>
+        <a href="/attendancelist" class="btn btn-secondary">Attendance List</a>
+    </div>
+
+    <!--external-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!--script-->
+    <script>
+        function showSuccessModal() {
+            $('#successModal').modal('show');
+        }
+        
+        function showFailureModal() {
+            $('#failureModal').modal('show');
+        }
+        
+        // Update this function to handle the form submission
+        function handleFormSubmission() {
+            var formData = new FormData(document.getElementById("registrationForm"));
+            
+            // Using fetch to make the request
+            fetch("/register", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccessModal();
+                } else {
+                    showFailureModal();
+                }
+            })
+            .catch(error => {
+                showFailureModal();
+                console.error("Error:", error);
+            });
+        }
+    </script>
+
+    <!--JavaScriptt-->
+    <script>
+
+        const captureBtn = document.getElementById('capture-btn');
+        const imageCanvas = document.getElementById('image-canvas');
+        const capturedImage = document.getElementById('captured-image');
+        const capturedImgElement = document.getElementById('captured-img');
+    
+        captureBtn.addEventListener('click', () => {
+            const constraints = { video: true };
+    
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function (stream) {
+                    const video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.onloadedmetadata = function (e) {
+                        video.play();
+    
+                        const canvas = imageCanvas;
+                        const context = canvas.getContext('2d');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+                        // Stop the camera stream
+                        stream.getTracks().forEach(track => track.stop());
+    
+                        // Set the value of the hidden input field with the captured image data
+                        const capturedImageData = canvas.toDataURL('image/jpeg');
+                        document.getElementById('image').value = capturedImageData;
+    
+                        // Display the captured image
+                        capturedImgElement.src = canvas.toDataURL('image/jpeg');
+                        capturedImage.style.display = 'block';
+                        //captureBtn.style.display = 'none';
+                    };
+                })
+                .catch(function (err) {
+                    console.error('Error accessing the camera:', err);
+                });
+        });
+
+    </script>
+
+
+</body>
+
+
+
+</html>

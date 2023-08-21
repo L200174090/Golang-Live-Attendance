@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance List</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Attendance List</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee Name</th>
+                    <th>Employee Work ID</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Similarity</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {{ range $index, $record := .Records }}
+                <tr>
+                    <td>{{ $index }}</td>
+                    <td>{{ $record.Name }}</td>
+                    <td>{{ $record.EmployeeWorkID }}</td>
+                    <td>{{ $record.ClockIn.Format "2006-01-02 15:04:05" }}</td>
+                    <td>
+                        {{ if $record.ClockOutSet }}
+                            {{ $record.ClockOut.Format "2006-01-02 15:04:05" }}
+                        {{ else }}
+                            Not Clockout yet
+                        {{ end }}
+                    </td>
+                    <td>{{ printf "%.2f" $record.Similarity }}%</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+
+        <div class="text-center mt-3">
+            <a href="/register" class="btn btn-primary">Back to Register</a>
+        </div>
+
+    </div>
+</body>
+</html>

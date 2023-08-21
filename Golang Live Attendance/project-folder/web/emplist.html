@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee List</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom CSS for improved UI/UX */
+        .container {
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            border-radius: 5px;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .img-thumbnail {
+            width: 80px;
+            height: auto;
+        }
+
+        .back-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Employee List</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee Name</th>
+                    <th>Employee Work ID</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range $index, $employee := .Employees }}
+                <tr>
+                    <td>{{ $index }}</td>
+                    <td>{{ $employee.Name }}</td>
+                    <td>{{ $employee.EmployeeWorkID }}</td>
+                    <td><img src="data:image/jpeg;base64,{{ $employee.Image }}" alt="{{ $employee.Name }}" class="img-thumbnail"></td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+
+        <div class="back-button">
+            <a href="/register" class="btn btn-primary">Back to Register</a>
+        </div>
+    </div>
+</body>
+</html>
