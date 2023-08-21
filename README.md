@@ -11,6 +11,7 @@ Live Attendance System with Go
 - [Usage](#usage)
 - [Additional Suggestions](#additional-suggestions)
 - [Contributing](#contributing)
+- [Demo](#demo)
 
 ## Introduction
 
@@ -79,3 +80,7 @@ Open a web browser and navigate to http://localhost:8080 to access the Live Atte
 ## Contributing
 
 Contributions are welcome! If you have suggestions or improvements, please open an issue or submit a pull request.
+
+## Demo
+
+video access: https://drive.google.com/file/d/1Pav9ngu8k496Pb0PAP6rF7NDLZLlmH8j/view?usp=sharing
